@@ -1,0 +1,11 @@
+  #// Routes all requests starting with /users to user-service.
+  spring:
+    cloud:
+      gateway:
+        routes:
+          - id: user-service
+            uri: lb://user-service
+            predicates:
+              - Path=/users/**
+
+#initial config, might change

@@ -1,0 +1,20 @@
+  #// - Port 8761 is conventionally used for Eureka servers but can be changed if needed.
+  #  // - Keeping it standard simplifies service communication.
+  spring:
+    application:
+      name: eureka-server
+  server:
+    port: 8761
+
+  eureka:
+    instance:
+      hostname: localhost
+    client:
+      register-with-eureka: false
+      fetch-registry: false
+      # Eureka server does not register itself (only clients register).
+      # This avoids unnecessary self-replication.
+    server:
+      wait-time-in-ms-when-sync-empty: 5
+      # How long the server waits if no service is registered (for faster startup during dev).
+#initial config, might change

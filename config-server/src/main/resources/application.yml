@@ -1,0 +1,19 @@
+ # // Port 8888 is the default for Config Servers.
+  spring:
+    application:
+      name: config-server
+  server:
+    port: 8888
+
+  git:
+    uri: file:///path/to/your/local/git-repo
+    # Configuration files are stored in a Git repository for version control.
+    # Replace with your actual path.
+
+    # For remote Git repositories, uncomment and replace with your repo URL.
+    # uri: https://github.com/your-org/config-repo.git
+    # username: your-username
+    # password: your-password
+    # This allows the Config Server to access private Git repositories.
+    #or you can use access token as well
+#initial config, might change
