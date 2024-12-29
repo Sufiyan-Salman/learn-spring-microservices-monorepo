@@ -10,6 +10,14 @@ spring:
 server:
     port: 8888
 
+ #We dont usually need this, adding the client dependency is usually enough, but just to be save, we have added this
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
+
+
 #  git:
 #    uri: file://home/sufiyan/Desktop/IdeaProjects/properties-repo-for-learn-microservices
 
