@@ -1,12 +1,19 @@
  # // Port 8888 is the default for Config Servers.
-  spring:
+spring:
     application:
       name: config-server
-  server:
+    cloud:
+      config:
+        server:
+          git:
+            uri: file:///home/sufiyan/Desktop/IdeaProjects/properties-repo-for-learn-microservices
+server:
     port: 8888
 
-  git:
-    uri: file:///path/to/your/local/git-repo
+#  git:
+#    uri: file://home/sufiyan/Desktop/IdeaProjects/properties-repo-for-learn-microservices
+
+#    uri: file:///path/to/your/local/git-repo
     # Configuration files are stored in a Git repository for version control.
     # Replace with your actual path.
 
