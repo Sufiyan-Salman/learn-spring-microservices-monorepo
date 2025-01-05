@@ -1,14 +1,35 @@
-  #// Routes all requests starting with /users to user-service.
 spring:
+  application:
+    name: api-gateway
+# api gateway's file should be kept in its own resources
 #    config:
 #      import: optional:configserver:http://localhost:8888
+#    cloud:
+#      gateway:
+#        routes:
+#          - id: user-service
+#            uri: lb://user-service
+#            predicates:
+#              - Path=/users/**
     cloud:
-      gateway:
-        routes:
-          - id: user-service
-            uri: lb://user-service
-            predicates:
-              - Path=/users/**
+       gateway:
+         routes:
+           - id: user-service
+             uri: lb://user-service
+             predicates:
+                - Path=/users/**
+           - id: order-service
+             uri: lb://order-service
+             predicates:
+                - Path=/orders/**
+           - id: inventory-service
+             uri: lb://inventory-service
+             predicates:
+                - Path=/inventory/**
+
+
+
+
 
 
 #We dont usually need this, adding the client dependency is usually enough, but just to be save, we have added this
@@ -16,6 +37,9 @@ eureka:
   client:
     service-url:
       defaultZone: http://localhost:8761/eureka
+
+server:
+  port: 8765
 
 
 

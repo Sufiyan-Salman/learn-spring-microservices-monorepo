@@ -6,7 +6,9 @@ spring:
       config:
         server:
           git:
-            uri: file:///home/sufiyan/Desktop/IdeaProjects/properties-repo-for-learn-microservices
+#            uri: file:///home/sufiyan/Desktop/IdeaProjects/properties-repo-for-learn-microservices #for linux
+            uri: C:\Users\Sufiyan\Desktop\Code\BE\properties-repo-for-learn-microservices #for windows
+
 server:
     port: 8888
 
