@@ -3,6 +3,8 @@ package com.learn.microservices.order_service.controllers;
 import com.learn.microservices.order_service.Config.InventoryServiceFeignClient;
 import com.learn.microservices.order_service.Entities.Order;
 import com.learn.microservices.order_service.repositories.OrderRepository;
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +23,10 @@ public class OrderController {
     private InventoryServiceFeignClient inventoryServiceFeignClient;
 
     @PostMapping
+    @CircuitBreaker(name = "inventory-service")
+    @Retry(name = "inventory-service", fallbackMethod = "orderFallback")
+//    @Retry(name = "inventory-service", fallbackMethod = "orderFallback")
+
     public ResponseEntity<String> placeOrder(@RequestBody Order order) {
         int stock = inventoryServiceFeignClient.checkInventory(order.getProductCode());
         if (stock >= order.getQuantity()) {
@@ -31,10 +37,34 @@ public class OrderController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Product out of stock.");
         }
     }
+    public ResponseEntity<String> orderFallback(Order order, Throwable t) {
+        return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
+                .body("Inventory Service is currently unavailable. Please try again later.");
+    }
 
     @GetMapping("/{userId}")
     public List<Order> getOrdersByUserId(@PathVariable Long userId) {
         return orderRepository.findByUserId(userId);
+    }
+
+    @GetMapping("/retry-sample")
+    @Retry(name = "retry-sample", fallbackMethod = "testRetryCorrectMethod") // different config for different services, add this in config file
+    public String testRetryViaResilience4j(){
+        System.out.println("======Retry Method Called======");
+        int a = 5/0;
+        return "hi";
+    }
+    @GetMapping("/circuit-sample")
+    @Retry(name = "retry-sample", fallbackMethod = "testRetryCorrectMethod") // different config for different services, add this in config file
+    @CircuitBreaker(name = "default") // different config for different services, add this in config file
+    public String testCircuitViaResilience4j(){
+        System.out.println("======Circuit breakr Method Called======");
+        int a = 5/0;
+        return "hi";
+    }
+    public String testRetryCorrectMethod(Exception ex){ // fallabck method must accept throwable argument or else it will not work, we can also have different fallbacks for different exceptions
+        System.out.println("Ex is: "+ex.getMessage());
+        return "Response from fallback method";
     }
 }
 

@@ -12,4 +12,22 @@ eureka:
       defaultZone: http://localhost:8761/eureka
 
 
-#initial config, might change
+#resilience config
+resilience4j:
+  retry:
+   instances:
+     retry-sample:
+       maxAttempts: 5
+       waitDuration: 1s # this specifies, how long to wait before hitting the req again
+       enableExponentialBackoff: true # the time between subseqquent retries increase exponentially so it would be like 1s -> 2s -> 4s ->8s
+     inventory-service: #This defines a circuit breaker specifically for calls to the inventory-service made via Feign.
+       max-attempts: 3 # If a call to the inventory-service fails, it will retry up to 3 times.
+       wait-duration: 2s #There is a 2-second delay between retries. This prevents overwhelming the service immediately after a failure.
+
+  circuitbreaker:
+    instances:
+      inventory-service: #This defines a circuit breaker specifically for calls to the inventory-service made via Feign.
+        sliding-window-size: 10 #This means the circuit breaker monitors the last 10 calls to track success or failure.
+        failure-rate-threshold: 50 #If more than 50% of the calls fail within the sliding window, the circuit breaker trips (opens).
+        minimum-number-of-calls: 5 #The circuit breaker only evaluates errors after at least 5 calls. This avoids premature tripping due to isolated errors.
+        wait-duration-in-open-state: 5s #After tripping, the circuit breaker waits for 5 seconds before allowing a limited number of test calls (half-open state). If successful, the circuit closes again.
