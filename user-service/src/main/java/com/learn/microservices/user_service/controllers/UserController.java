@@ -3,6 +3,7 @@ package com.learn.microservices.user_service.controllers;
 import com.learn.microservices.user_service.Entities.User;
 import com.learn.microservices.user_service.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,6 +17,21 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Value("${server.port}")
+    private String port;
+
+    /**
+     * <pre>
+     *     This is added to run multiple instances of user-service with different ports and to check if api-gateway correctly balances the load or not, and it does.
+     *     To run multiple instances, create new run configuration and write this in program arguments
+     *     --server.port= port which you would like to run on
+     * </pre>
+     *
+     */
+    @GetMapping("/instance")
+    public String getInstance() {
+        return "User Service is running on port: " + port;
+    }
     @PostMapping
     public User createUser(@RequestBody User user) {
         return userService.createUser(user);

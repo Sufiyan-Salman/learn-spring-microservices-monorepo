@@ -11,9 +11,9 @@ spring:
 #            uri: lb://user-service
 #            predicates:
 #              - Path=/users/**
-    cloud:
-       gateway:
-         routes:
+  cloud:
+    gateway:
+      routes:
            - id: user-service
              uri: lb://user-service
              predicates:
@@ -41,6 +41,11 @@ eureka:
 server:
   port: 8765
 
+#for logging of req mapping
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    reactor.netty.http.client: DEBUG
 
 
 #initial config, might change
