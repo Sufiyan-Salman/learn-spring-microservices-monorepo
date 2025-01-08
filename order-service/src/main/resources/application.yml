@@ -31,3 +31,15 @@ resilience4j:
         failure-rate-threshold: 50 #If more than 50% of the calls fail within the sliding window, the circuit breaker trips (opens).
         minimum-number-of-calls: 5 #The circuit breaker only evaluates errors after at least 5 calls. This avoids premature tripping due to isolated errors.
         wait-duration-in-open-state: 5s #After tripping, the circuit breaker waits for 5 seconds before allowing a limited number of test calls (half-open state). If successful, the circuit closes again.
+
+  ratelimiter: #protecting the service from being overwhelmed by too many requests.
+    instances:
+      inventory-service:
+        limit-for-period: 1 # This allows 1 requests within each refresh period.
+        limit-refresh-period: 5s # Ratelimiter resets every 5 seconds
+
+  bulkhead: #limits concurrent calls
+    instances:
+      inventory-service:
+        max-concurrent-calls: 5 #A maximum of 5 concurrent calls to the inventory-service is allowed.
+        max-wait-duration: 2s # If all slots are full, additional calls wait for up to 2 seconds before timing out.

@@ -3,7 +3,9 @@ package com.learn.microservices.order_service.controllers;
 import com.learn.microservices.order_service.Config.InventoryServiceFeignClient;
 import com.learn.microservices.order_service.Entities.Order;
 import com.learn.microservices.order_service.repositories.OrderRepository;
+import io.github.resilience4j.bulkhead.annotation.Bulkhead;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.ratelimiter.annotation.RateLimiter;
 import io.github.resilience4j.retry.annotation.Retry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,8 +27,8 @@ public class OrderController {
     @PostMapping
     @CircuitBreaker(name = "inventory-service")
     @Retry(name = "inventory-service", fallbackMethod = "orderFallback")
-//    @Retry(name = "inventory-service", fallbackMethod = "orderFallback")
-
+    @RateLimiter(name = "inventory-service")
+    @Bulkhead(name = "inventory-service")
     public ResponseEntity<String> placeOrder(@RequestBody Order order) {
         int stock = inventoryServiceFeignClient.checkInventory(order.getProductCode());
         if (stock >= order.getQuantity()) {
@@ -55,11 +57,13 @@ public class OrderController {
         return "hi";
     }
     @GetMapping("/circuit-sample")
-    @Retry(name = "retry-sample", fallbackMethod = "testRetryCorrectMethod") // different config for different services, add this in config file
-    @CircuitBreaker(name = "default") // different config for different services, add this in config file
+//    @Retry(name = "retry-sample", fallbackMethod = "testRetryCorrectMethod") // different config for different services, add this in config file
+//    @CircuitBreaker(name = "default") // different config for different services, add this in config file
+    @RateLimiter(name = "inventory-service")
+    @Bulkhead(name = "inventory-service")
     public String testCircuitViaResilience4j(){
         System.out.println("======Circuit breakr Method Called======");
-        int a = 5/0;
+//        int a = 5/0;
         return "hi";
     }
     public String testRetryCorrectMethod(Exception ex){ // fallabck method must accept throwable argument or else it will not work, we can also have different fallbacks for different exceptions
