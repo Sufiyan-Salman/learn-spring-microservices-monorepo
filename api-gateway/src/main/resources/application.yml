@@ -46,6 +46,16 @@ logging:
   level:
     org.springframework.cloud.gateway: DEBUG
     reactor.netty.http.client: DEBUG
+  pattern:
+    level:%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}] #SB3
 
+#spring zipkin
+management:
+  tracing:
+    sampling:
+      probability: 1.0 # specifies the percentage of reqs we'd want to trace, as we are using it for learning purposes currently, I have set it up to 100%
+    zipkin:
+      enabled: true
+#logging:
 
 #initial config, might change

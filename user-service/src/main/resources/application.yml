@@ -12,4 +12,11 @@ eureka:
       defaultZone: http://localhost:8761/eureka
 
 
-#initial config, might change
+
+#spring zipkin
+management:
+  tracing:
+    sampling:
+      probability: 1.0 # specifies the percentage of reqs we'd want to trace, as we are using it for learning purposes currently, I have set it up to 100%
+    zipkin:
+      enabled: true

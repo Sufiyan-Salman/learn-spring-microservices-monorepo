@@ -30,12 +30,17 @@ public class OrderController {
     @RateLimiter(name = "inventory-service")
     @Bulkhead(name = "inventory-service")
     public ResponseEntity<String> placeOrder(@RequestBody Order order) {
+        System.out.println("in place order");
         int stock = inventoryServiceFeignClient.checkInventory(order.getProductCode());
+        System.out.println("recieved stock: "+stock);
         if (stock >= order.getQuantity()) {
+            System.out.println("placing order ");
             inventoryServiceFeignClient.deductStock(order.getProductCode(), order.getQuantity());
-            orderRepository.save(order);
+//            orderRepository.save(order);
+            System.out.println("placed order");
             return ResponseEntity.ok("Order placed successfully.");
         } else {
+            System.out.println("out of stock");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Product out of stock.");
         }
     }

@@ -43,3 +43,12 @@ resilience4j:
       inventory-service:
         max-concurrent-calls: 5 #A maximum of 5 concurrent calls to the inventory-service is allowed.
         max-wait-duration: 2s # If all slots are full, additional calls wait for up to 2 seconds before timing out.
+
+
+#spring zipkin
+management:
+  tracing:
+    sampling:
+      probability: 1.0 # specifies the percentage of reqs we'd want to trace, as we are using it for learning purposes currently, I have set it up to 100%
+    zipkin:
+      enabled: true

@@ -19,4 +19,12 @@
     server:
       wait-time-in-ms-when-sync-empty: 5
       # How long the server waits if no service is registered (for faster startup during dev).
-#initial config, might change
+
+
+  #spring zipkin
+#management:
+#  tracing:
+#    sampling:
+#      probability: 1.0 # specifies the percentage of reqs we'd want to trace, as we are using it for learning purposes currently, I have set it up to 100%
+#    zipkin:
+#      enabled: true

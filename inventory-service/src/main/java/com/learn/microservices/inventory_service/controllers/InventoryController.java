@@ -29,6 +29,8 @@ public class InventoryController {
     @GetMapping("/check/{productCode}")
     public int checkInventory(@PathVariable String productCode) {
         Optional<Inventory> inventory = inventoryRepository.findByProductCode(productCode);
+        System.out.println("In check invevntory");
+
         return inventory.isPresent() ? inventory.get().getQuantity() : 0;
 
 
@@ -38,11 +40,14 @@ public class InventoryController {
     public ResponseEntity<String> deductStock(@PathVariable String productCode, @PathVariable int quantity) {
         Inventory inventory = (Inventory) inventoryRepository.findByProductCode(productCode)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        System.out.println("In deduct inventory");
         if (inventory.getQuantity() >= quantity) {
             inventory.setQuantity(inventory.getQuantity() - quantity);
             inventoryRepository.save(inventory);
+            System.out.println("Deducted");
             return ResponseEntity.ok("Stock deducted.");
         } else {
+            System.out.println("Couldnt Deduct");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Insufficient stock.");
         }
     }
