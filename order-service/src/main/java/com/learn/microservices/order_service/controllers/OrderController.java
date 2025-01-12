@@ -75,6 +75,10 @@ public class OrderController {
         System.out.println("Ex is: "+ex.getMessage());
         return "Response from fallback method";
     }
+    @GetMapping("/instance")
+    public String getInstance() {
+        return "Order Service is running on port ";
+    }
 }
 
 

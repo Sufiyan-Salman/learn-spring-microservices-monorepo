@@ -17,7 +17,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @Value("${server.port}")
+    @Value("${server.port:8081}")
     private String port;
 
     /**

@@ -1,0 +1,148 @@
+version: '3.8'
+
+services:
+
+  # Eureka Server
+  eureka-server:
+    image: docker.io/sufiyansalman/eureka-server:0.0.1-SNAPSHOT
+    container_name: eureka-server
+    ports:
+      - "8761:8761"
+    environment:
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://eureka-server:8761/eureka
+      MANAGEMENT.ZIPKIN.TRACING.ENDPOINT: http://zipkin-server:9411/api/v2/spans
+
+    #      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - sufiyan-microservices-network
+
+
+  # Configuration Server
+  config-server:
+    image: docker.io/sufiyansalman/config-server:0.0.1-SNAPSHOT
+    container_name: config-server
+    ports:
+      - "8888:8888"
+    environment:
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://eureka-server:8761/eureka
+      MANAGEMENT.ZIPKIN.TRACING.ENDPOINT: http://zipkin-server:9411/api/v2/spans
+      SPRING.CLOUD.CONFIG.SERVER.GIT.URI: file:///git-repo # to attach local repo
+
+    volumes:
+      - C:\Users\Sufiyan\Desktop\Code\BE\properties-repo-for-learn-microservices:/git-repo # to attach local repo
+#      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - sufiyan-microservices-network
+    depends_on:
+      - eureka-server
+
+
+  # API Gateway
+  api-gateway:
+    image: docker.io/sufiyansalman/api-gateway:0.0.1-SNAPSHOT
+    container_name: api-gateway
+    ports:
+      - "8765:8765"
+    environment:
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://eureka-server:8761/eureka
+      MANAGEMENT.ZIPKIN.TRACING.ENDPOINT: http://zipkin-server:9411/api/v2/spans
+
+#      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - sufiyan-microservices-network
+    depends_on:
+      - eureka-server
+
+  # User Service (Original Port)
+  user-service:
+    image: docker.io/sufiyansalman/user-service:0.0.1-SNAPSHOT
+    container_name: user-service
+    ports:
+      - "8081:8081"
+    environment:
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://eureka-server:8761/eureka
+      MANAGEMENT.ZIPKIN.TRACING.ENDPOINT: http://zipkin-server:9411/api/v2/spans
+      SPRING.CONFIG.IMPORT : configserver:http://config-server:8888
+
+#      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - sufiyan-microservices-network
+    depends_on:
+      - config-server
+      - eureka-server
+    restart: always #Restart if there is a problem starting up, as it will shut down wen config server is not available and it fails at fetching config
+
+
+  # User Service 2
+  user-service-second:
+    image: docker.io/sufiyansalman/user-service:0.0.1-SNAPSHOT
+    container_name: user-service-second
+    ports:
+      - "8082:8082"
+    environment:
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://eureka-server:8761/eureka
+      MANAGEMENT.ZIPKIN.TRACING.ENDPOINT: http://zipkin-server:9411/api/v2/spans
+      SPRING.CONFIG.IMPORT : configserver:http://config-server:8888
+      SERVER.PORT: 8082
+
+#      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - sufiyan-microservices-network
+    depends_on:
+      - config-server
+      - eureka-server
+    restart: always #Restart if there is a problem starting up, as it will shut down wen config server is not available and it fails at fetching config
+
+
+  # Inventory Service
+  inventory-service:
+    image: docker.io/sufiyansalman/inventory-service:0.0.1-SNAPSHOT
+    container_name: inventory-service
+    ports:
+      - "8083:8083"
+    environment:
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://eureka-server:8761/eureka
+      MANAGEMENT.ZIPKIN.TRACING.ENDPOINT: http://zipkin-server:9411/api/v2/spans
+      SPRING.CONFIG.IMPORT : configserver:http://config-server:8888
+      SERVER.PORT: 8083
+#      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - sufiyan-microservices-network
+    depends_on:
+      - config-server
+      - eureka-server
+    restart: always #Restart if there is a problem starting up, as it will shut down wen config server is not available and it fails at fetching config
+
+
+  # Order Service
+  order-service:
+    image: docker.io/sufiyansalman/order-service:0.0.1-SNAPSHOT
+    container_name: order-service
+    ports:
+      - "8084:8084"   #port mapping
+    environment:
+      EUREKA.CLIENT.SERVICEURL.DEFAULTZONE: http://eureka-server:8761/eureka
+      MANAGEMENT.ZIPKIN.TRACING.ENDPOINT: http://zipkin-server:9411/api/v2/spans
+      SPRING.CONFIG.IMPORT : configserver:http://config-server:8888
+
+#      - SPRING_PROFILES_ACTIVE=docker
+    networks:
+      - sufiyan-microservices-network
+    depends_on:
+      - config-server
+      - eureka-server
+    restart: always #Restart if there is a problem starting up, as it will shut down wen config server is not available and it fails at fetching config
+
+
+  # Zipkin
+  zipkin-server:
+    image: openzipkin/zipkin
+    container_name: zipkin-server
+    ports:
+      - "9411:9411"
+    networks:
+      - sufiyan-microservices-network
+
+networks:
+  sufiyan-microservices-network:
+#    driver: bridge  #Isolated network for containers running on the same host.

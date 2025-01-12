@@ -22,6 +22,10 @@ public class InventoryController {
         return inventoryRepository.save(inventory);
     }
 
+    @GetMapping("/instance")
+    public String getInstance() {
+        return "Inventory Service is running on port ";
+    }
     @GetMapping("/{id}")
     public Inventory getInventory(@PathVariable Long id) {
         return inventoryRepository.findById(id).orElseThrow(() -> new RuntimeException("Inventory not found"));
