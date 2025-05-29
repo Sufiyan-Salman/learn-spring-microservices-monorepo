@@ -23,8 +23,8 @@ public class OrderController {
 
     @Autowired
     private InventoryServiceFeignClient inventoryServiceFeignClient;
-
-    @PostMapping
+//    TODO: Take the resiliience logic to a central class to avoid code duplicate
+    @PostMapping("/place-order")
     @CircuitBreaker(name = "inventory-service")
     @Retry(name = "inventory-service", fallbackMethod = "orderFallback")
     @RateLimiter(name = "inventory-service")

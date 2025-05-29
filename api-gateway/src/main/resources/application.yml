@@ -13,6 +13,8 @@ spring:
 #              - Path=/users/**
   cloud:
     gateway:
+      default-filters:
+        - TokenRelay
       routes:
            - id: user-service
              uri: lb://user-service
@@ -27,6 +29,24 @@ spring:
              predicates:
                 - Path=/inventory/**
 
+  security:
+    oauth2:
+      client:
+        registration:
+          keycloak:
+            client-id: learning-microservices-api-gateway
+            client-secret: Z46gdfg54TGKjCdsgfg445446gsdfg9dgsfgkOsoM8IHAr0X1xwVs46542dfgsgjlbpiIeuR3
+            provider: keycloak
+            authorization-grant-type: authorization_code
+#            redirect-uri: "{baseUrl}/login/oauth2/code/{registrationId}"
+            scope:
+              - openid
+        provider:
+          keycloak:
+            issuer-uri: http://localhost:8555/realms/learn-microservices-realm
+      resource-server:
+        jwt:
+          issuer-uri: http://localhost:8555/realms/learn-microservices-realm
 
 
 
@@ -46,6 +66,8 @@ logging:
   level:
     org.springframework.cloud.gateway: DEBUG
     reactor.netty.http.client: DEBUG
+    org.springframework.security: DEBUG
+
   pattern:
     level:%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}] #SB3
 

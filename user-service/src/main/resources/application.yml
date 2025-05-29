@@ -4,7 +4,11 @@ spring:
 #  cloud:
   config:
     import: optional:configserver:http://localhost:8888
-
+  security:
+    oauth2:
+      resource-server:
+        jwt:
+          issuer-uri: http://localhost:8555/realms/learn-microservices-realm
 #We dont usually need this, adding the client dependency is usually enough, but just to be save, we have added this
 eureka:
   client:

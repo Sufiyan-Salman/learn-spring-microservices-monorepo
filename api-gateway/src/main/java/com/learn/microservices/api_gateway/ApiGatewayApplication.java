@@ -10,4 +10,20 @@ public class ApiGatewayApplication {
 		SpringApplication.run(ApiGatewayApplication.class, args);
 	}
 
+//	@GetMapping("/auth/tokens")
+//	public Map<String, String> getTokens(
+//			@RegisteredOAuth2AuthorizedClient("learning-microservices-api-gateway")
+//			OAuth2AuthorizedClient authorizedClient
+//	) {
+//		String accessToken = authorizedClient.getAccessToken().getTokenValue();
+//		String refreshToken = authorizedClient.getRefreshToken() != null
+//				? authorizedClient.getRefreshToken().getTokenValue()
+//				: "N/A";
+//
+//		return Map.of(
+//				"access_token", accessToken,
+//				"refresh_token", refreshToken
+//		);
+//	}
+
 }
