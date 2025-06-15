@@ -1,0 +1,12 @@
+singleServerConfig:
+  address: "redis://host.docker.internal:6379"
+  connectionMinimumIdleSize: 5
+  connectionPoolSize: 10
+  idleConnectionTimeout: 10000
+  connectTimeout: 10000
+  timeout: 3000
+  database: 0
+
+
+#within docker network:> address: "redis://redis-server:6379"
+#without docker networ:> address: "redis://host.docker.internal:6379"

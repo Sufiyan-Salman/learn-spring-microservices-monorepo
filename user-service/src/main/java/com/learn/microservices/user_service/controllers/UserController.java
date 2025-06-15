@@ -4,6 +4,7 @@ import com.learn.microservices.user_service.Entities.User;
 import com.learn.microservices.user_service.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -56,6 +57,12 @@ public class UserController {
     @DeleteMapping("/{id}")
     public void deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
+    }
+
+    @GetMapping("/check-cache")
+    @Cacheable(value = "#testcase",key = "#key")
+    public String testCache(@RequestParam String key){
+        return key.equalsIgnoreCase("test")? "testCase1" : "notTest";
     }
 }
 

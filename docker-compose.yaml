@@ -70,6 +70,7 @@ services:
     depends_on:
       - config-server
       - eureka-server
+      - redis-server
     restart: always #Restart if there is a problem starting up, as it will shut down wen config server is not available and it fails at fetching config
 
 
@@ -91,6 +92,7 @@ services:
     depends_on:
       - config-server
       - eureka-server
+      - redis-server
     restart: always #Restart if there is a problem starting up, as it will shut down wen config server is not available and it fails at fetching config
 
 
@@ -111,6 +113,7 @@ services:
     depends_on:
       - config-server
       - eureka-server
+      - redis-server
     restart: always #Restart if there is a problem starting up, as it will shut down wen config server is not available and it fails at fetching config
 
 
@@ -131,6 +134,7 @@ services:
     depends_on:
       - config-server
       - eureka-server
+      - redis-server
     restart: always #Restart if there is a problem starting up, as it will shut down wen config server is not available and it fails at fetching config
 
 
@@ -142,6 +146,16 @@ services:
       - "9411:9411"
     networks:
       - sufiyan-microservices-network
+
+  #redis
+  redis:
+    image: redis:latest
+    container_name: redis-server
+    ports:
+      - "6379:6379"
+    networks:
+      - sufiyan-microservices-network
+
 
 networks:
   sufiyan-microservices-network:

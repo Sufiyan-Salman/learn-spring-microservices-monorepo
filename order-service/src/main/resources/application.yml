@@ -9,6 +9,8 @@ spring:
       resource-server:
         jwt:
           issuer-uri: http://localhost:8555/realms/learn-microservices-realm
+  cache:
+    type: redis
 #We dont usually need this, adding the client dependency is usually enough, but just to be save, we have added this
 eureka:
   client:
@@ -59,3 +61,7 @@ management:
       probability: 1.0 # specifies the percentage of reqs we'd want to trace, as we are using it for learning purposes currently, I have set it up to 100%
     zipkin:
       enabled: true
+
+#redisson config, a redis client
+redisson:
+  file: classpath:redisson-config.yml
