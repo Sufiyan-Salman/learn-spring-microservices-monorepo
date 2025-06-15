@@ -32,7 +32,7 @@ public class RedisCacheConfig {
 //    public CacheManager cacheManager() {
 //        try {
 //            Config config = Config.fromYAML(
-//                    this.getClass().getClassLoader().getResource("redisson-config.yaml")
+//                    this.getClass().getClassLoader().getResource("redisson-config.yml")
 //            );
 //            RedissonClient redissonClient = Redisson.create(config);
 //
