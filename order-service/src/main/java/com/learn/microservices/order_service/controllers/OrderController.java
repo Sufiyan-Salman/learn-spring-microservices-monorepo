@@ -1,6 +1,7 @@
 package com.learn.microservices.order_service.controllers;
 
 import com.learn.microservices.order_service.Config.InventoryServiceFeignClient;
+import com.learn.microservices.order_service.Config.Queue.EventProducers.OrderEventProducer;
 import com.learn.microservices.order_service.Entities.Order;
 import com.learn.microservices.order_service.repositories.OrderRepository;
 import io.github.resilience4j.bulkhead.annotation.Bulkhead;
@@ -20,6 +21,9 @@ public class OrderController {
 
     @Autowired
     private OrderRepository orderRepository;
+
+    @Autowired
+    private OrderEventProducer orderEventProducer;
 
     @Autowired
     private InventoryServiceFeignClient inventoryServiceFeignClient;
@@ -78,6 +82,11 @@ public class OrderController {
     @GetMapping("/instance")
     public String getInstance() {
         return "Order Service is running on port ";
+    }
+
+    @PostMapping("/kafka-topic")
+    public void sendToKafkaTopic(){
+        orderEventProducer.sendOrderEvent("test-topic","Hi sufiyan");
     }
 }
 

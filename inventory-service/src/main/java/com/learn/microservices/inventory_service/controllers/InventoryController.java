@@ -1,5 +1,6 @@
 package com.learn.microservices.inventory_service.controllers;
 
+import com.learn.microservices.inventory_service.Config.Queue.EventProducers.OrderEventProducer;
 import com.learn.microservices.inventory_service.Entities.Inventory;
 import com.learn.microservices.inventory_service.repositories.InventoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,9 @@ public class InventoryController {
 
     @Autowired
     private InventoryRepository inventoryRepository;
+
+    @Autowired
+    private OrderEventProducer orderEventProducer;
 
     @PostMapping
     public Inventory createInventory(@RequestBody Inventory inventory) {
@@ -54,6 +58,11 @@ public class InventoryController {
             System.out.println("Couldnt Deduct");
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Insufficient stock.");
         }
+    }
+
+    @PostMapping("/kafka-topic")
+    public void sendToKafkaTopic(){
+        orderEventProducer.sendOrderEvent("test-topic","Hi sufiyan");
     }
 }
 

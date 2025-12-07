@@ -1,5 +1,6 @@
 package com.learn.microservices.user_service.controllers;
 
+import com.learn.microservices.user_service.Config.Queue.EventProducers.OrderEventProducer;
 import com.learn.microservices.user_service.Entities.User;
 import com.learn.microservices.user_service.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,9 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private OrderEventProducer orderEventProducer;
 
     @Value("${server.port:8081}")
     private String port;
@@ -63,6 +67,11 @@ public class UserController {
     @Cacheable(value = "#testcase",key = "#key")
     public String testCache(@RequestParam String key){
         return key.equalsIgnoreCase("test")? "testCase1" : "notTest";
+    }
+
+    @PostMapping("/kafka-topic")
+    public void sendToKafkaTopic(){
+        orderEventProducer.sendOrderEvent("test-topic","Hi sufiyan");
     }
 }
 

@@ -2,9 +2,11 @@ package com.learn.microservices.inventory_service.Config;
 
 import jakarta.annotation.PostConstruct;
 import org.redisson.api.RedissonClient;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
+@ConditionalOnProperty(name = "spring.cache.type", havingValue = "redis")
 public class RedisCacheConfig {
 
     // currently my redisson bean is being setup automatically by spring, so I need this for health check.
